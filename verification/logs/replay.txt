@@ -1,0 +1,3 @@
+Set Cover equivalence, connectivity and width one: 246 scheduled instances (196 yes, 50 no).
+Simulation checks: legal ignitions and all stopping times, including success on the final spread.
+Worked example: 21 vertices, h = 14, all burning at t = 14, final check t = 15, first late contact t = 16.

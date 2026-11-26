@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One temporal contact per round</title>
+<style>
+:root{color-scheme:dark;--bg:#0a1624;--card:#13263c;--ink:#f4f5f4;--quiet:#a9bed0;--line:#36536d;--cyan:#70e1cb;--gold:#ffe198;--orange:#ffae78}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,sans-serif}
+main{max-width:60rem;padding:clamp(.75rem,4vw,2rem);margin:auto}
+h1{font-size:clamp(1.75rem,5vw,2.8rem);line-height:1.12;margin:0 0 .5rem}
+p{margin:.5rem 0 1rem}
+.layout{display:grid;grid-template-columns:1.18fr 1fr;gap:.8rem;align-items:start}
+section{min-width:0;background:var(--card);padding:.75rem;border:1px solid var(--line);border-radius:.75rem}
+canvas{display:block;width:100%;aspect-ratio:704/490}
+label{display:block;font-weight:bold}
+input{width:100%;accent-color:var(--gold)}
+.buttons{display:flex;gap:.45rem;flex-wrap:wrap;margin:.65rem 0}
+button{background:#1e3b56;border:1px solid #567793;border-radius:.35rem;padding:.45rem .65rem;color:var(--ink);font:inherit}
+button:not(:disabled){cursor:pointer}
+button:disabled{opacity:.5}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.status{display:grid;gap:.30rem}
+#progress,.quiet{color:var(--quiet)}
+#roundTitle{margin:.2rem 0 .4rem;font-size:1.45rem;line-height:1.18}
+#spread{color:var(--gold)}
+#ignition{color:var(--orange)}
+.legend{display:flex;flex-wrap:wrap;gap:.35rem .75rem;font-size:.9rem}
+.legend i{font-style:normal;font-size:1.1rem}
+@media(max-width:680px){.layout{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<header><h1>One contact per round</h1><p>Replay a real Set Cover reduction with universe {a, b}, sets S1 = {a, b} and S2 = {b}, and a budget of one set. The illustrated schedule selects S1.</p></header>
+<div class="layout">
+<section aria-label="Temporal graph">
+<canvas id="graph" role="img" aria-label="Temporal graph state">The exact current contact, spread and ignition are listed beside the graph.</canvas>
+<div class="legend"><span><i style="color:var(--cyan)">●</i> Burning</span><span><i style="color:var(--gold)">●</i> Newly reached</span><span><i style="color:var(--orange)">●</i> Just ignited</span></div>
+</section>
+<section aria-label="Schedule controls">
+<label for="time">Inspect timestep</label><input type="range" id="time" min="0" value="0" step="1">
+<div class="buttons"><button id="prev">Previous</button><button id="next">Next</button><button id="play">Play</button></div>
+<div class="status" aria-live="polite">
+<div id="progress"></div><h2 id="roundTitle"></h2><div id="edge"></div><div id="spread"></div><div id="ignition"></div><div id="total"></div>
+</div>
+</section>
+</div>
+<p class="quiet">The clock advances one round at a time. Fire first follows that round’s single contact from a previously burning endpoint. Then you may see the prescribed ignition at a still-unburnt vertex. The legal strategy has 14 ignitions, with one more spread allowed at round 15. Late leaves T1 to T12 have no contact until round 16 or later.</p>
+<p>Each edge’s interval is a singleton. The displayed contacts therefore give edge-interval-membership width one across the entire timeline, including the late leaves.</p>
+</main>
+<script type="application/json" id="schedule">{"rounds":[{"time":0,"phase":"Start","edge":null,"new":[],"ignition":null,"burned":[]},{"time":1,"phase":"Choose","edge":null,"new":[],"ignition":"C","burned":["C"]},{"time":2,"phase":"Choose","edge":null,"new":[],"ignition":"S1","burned":["S1","C"]},{"time":3,"phase":"Relays","edge":["S1","R1a"],"new":["R1a"],"ignition":"T1","burned":["S1","R1a","C","T1"]},{"time":4,"phase":"Relays","edge":["S1","R1b"],"new":["R1b"],"ignition":"T2","burned":["S1","R1a","R1b","C","T1","T2"]},{"time":5,"phase":"Relays","edge":["S2","R2b"],"new":[],"ignition":"T3","burned":["S1","R1a","R1b","C","T1","T2","T3"]},{"time":6,"phase":"Elements","edge":["R1a","a"],"new":["a"],"ignition":"T4","burned":["S1","a","R1a","R1b","C","T1","T2","T3","T4"]},{"time":7,"phase":"Elements","edge":["R1b","b"],"new":["b"],"ignition":"T5","burned":["S1","a","b","R1a","R1b","C","T1","T2","T3","T4","T5"]},{"time":8,"phase":"Elements","edge":["R2b","b"],"new":["R2b"],"ignition":"T6","burned":["S1","a","b","R1a","R1b","R2b","C","T1","T2","T3","T4","T5","T6"]},{"time":9,"phase":"Cleanup","edge":["C","P"],"new":["P"],"ignition":"T7","burned":["S1","a","b","R1a","R1b","R2b","C","P","T1","T2","T3","T4","T5","T6","T7"]},{"time":10,"phase":"Cleanup","edge":["C","S1"],"new":[],"ignition":"T8","burned":["S1","a","b","R1a","R1b","R2b","C","P","T1","T2","T3","T4","T5","T6","T7","T8"]},{"time":11,"phase":"Cleanup","edge":["C","S2"],"new":["S2"],"ignition":"T9","burned":["S1","S2","a","b","R1a","R1b","R2b","C","P","T1","T2","T3","T4","T5","T6","T7","T8","T9"]},{"time":12,"phase":"Cleanup","edge":["C","R1a"],"new":[],"ignition":"T10","burned":["S1","S2","a","b","R1a","R1b","R2b","C","P","T1","T2","T3","T4","T5","T6","T7","T8","T9","T10"]},{"time":13,"phase":"Cleanup","edge":["C","R1b"],"new":[],"ignition":"T11","burned":["S1","S2","a","b","R1a","R1b","R2b","C","P","T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11"]},{"time":14,"phase":"Cleanup","edge":["C","R2b"],"new":[],"ignition":"T12","burned":["S1","S2","a","b","R1a","R1b","R2b","C","P","T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12"]},{"time":15,"phase":"Final spread","edge":null,"new":[],"ignition":null,"burned":["S1","S2","a","b","R1a","R1b","R2b","C","P","T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12"]},{"time":16,"phase":"After deadline","edge":["C","T1"],"new":[],"ignition":null,"burned":["S1","S2","a","b","R1a","R1b","R2b","C","P","T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12"]},{"time":17,"phase":"After deadline","edge":["C","T2"],"new":[],"ignition":null,"burned":["S1","S2","a","b","R1a","R1b","R2b","C","P","T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12"]},{"time":18,"phase":"After deadline","edge":["C","T3"],"new":[],"ignition":null,"burned":["S1","S2","a","b","R1a","R1b","R2b","C","P","T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12"]},{"time":19,"phase":"After deadline","edge":["C","T4"],"new":[],"ignition":null,"burned":["S1","S2","a","b","R1a","R1b","R2b","C","P","T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12"]},{"time":20,"phase":"After deadline","edge":["C","T5"],"new":[],"ignition":null,"burned":["S1","S2","a","b","R1a","R1b","R2b","C","P","T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12"]},{"time":21,"phase":"After deadline","edge":["C","T6"],"new":[],"ignition":null,"burned":["S1","S2","a","b","R1a","R1b","R2b","C","P","T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12"]},{"time":22,"phase":"After deadline","edge":["C","T7"],"new":[],"ignition":null,"burned":["S1","S2","a","b","R1a","R1b","R2b","C","P","T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12"]},{"time":23,"phase":"After deadline","edge":["C","T8"],"new":[],"ignition":null,"burned":["S1","S2","a","b","R1a","R1b","R2b","C","P","T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12"]},{"time":24,"phase":"After deadline","edge":["C","T9"],"new":[],"ignition":null,"burned":["S1","S2","a","b","R1a","R1b","R2b","C","P","T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12"]},{"time":25,"phase":"After deadline","edge":["C","T10"],"new":[],"ignition":null,"burned":["S1","S2","a","b","R1a","R1b","R2b","C","P","T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12"]},{"time":26,"phase":"After deadline","edge":["C","T11"],"new":[],"ignition":null,"burned":["S1","S2","a","b","R1a","R1b","R2b","C","P","T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12"]},{"time":27,"phase":"After deadline","edge":["C","T12"],"new":[],"ignition":null,"burned":["S1","S2","a","b","R1a","R1b","R2b","C","P","T1","T2","T3","T4","T5","T6","T7","T8","T9","T10","T11","T12"]}],"points":{"S1":[115,93],"S2":[115,233],"R1a":[352,87],"R1b":[352,159],"R2b":[352,231],"a":[588,94],"b":[588,187],"C":[215,251],"P":[488,251],"T1":[85,381],"T2":[192,381],"T3":[299,381],"T4":[406,381],"T5":[513,381],"T6":[620,381],"T7":[85,443],"T8":[192,443],"T9":[299,443],"T10":[406,443],"T11":[513,443],"T12":[620,443]}}</script>
+<script>
+"use strict";
+const schedule = JSON.parse(document.querySelector("#schedule").textContent);
+const el = id => document.getElementById(id);
+const slider = el("time");
+const rows = schedule.rounds;
+slider.max = rows.length - 1;
+let timer = null;
+const color = { background:"#0f2033", quiet:"#a9bed0", card:"#13263c", cyan:"#70e1cb", gold:"#ffe198", orange:"#ffae78", line:"#516a80", ink:"#f4f5f4" };
+function draw(row) {
+  const canvas = el("graph"), bounds = canvas.getBoundingClientRect(), density = devicePixelRatio || 1;
+  canvas.width = Math.round(bounds.width*density); canvas.height = Math.round(bounds.height*density);
+  const c = canvas.getContext("2d");
+  c.scale(canvas.width / 704, canvas.height / 490);
+  c.fillStyle = color.background; c.fillRect(0,0,704,490);
+  const text = (str,x,y,size,fill,bold=false) => {
+    c.fillStyle=fill; c.font=`${bold ? "bold " : ""}${size}px system-ui`;
+    c.textAlign="center"; c.textBaseline="middle"; c.fillText(str,x,y);
+  };
+  text("Sets", 115, 28, 29, color.quiet, true);
+  text("Relays", 352, 28, 29, color.quiet, true);
+  text("Elements", 588, 28, 29, color.quiet, true);
+  text("Late leaves", 352, 326, 29, color.quiet, true);
+  if (row.edge) {
+    const [[x,y],[u,v]] = row.edge.map(id => schedule.points[id]);
+    c.strokeStyle = color.gold; c.lineWidth = 7;
+    if (row.time > 15) c.setLineDash([11,8]);
+    c.beginPath(); c.moveTo(x,y); c.lineTo(u,v); c.stroke();
+    c.setLineDash([]);
+  }
+  const lit = new Set(row.burned);
+  for (const [name,[x,y]] of Object.entries(schedule.points)) {
+    const late = name.startsWith("T");
+    const mark = name === row.ignition ? color.orange : row.new.includes(name) ? color.gold : lit.has(name) ? color.cyan : color.line;
+    c.fillStyle = mark;
+    if (late) c.fillRect(x-31,y-23,62,46);
+    else { c.beginPath(); c.arc(x,y,33,0,Math.PI*2); c.fill(); }
+    text(name,x,y+1,late ? 24 : 28,lit.has(name) ? color.background : color.ink,true);
+  }
+  canvas.setAttribute("aria-label", `Round ${row.time}. ${row.burned.length} of 21 vertices burning. ${row.edge ? "Contact between "+row.edge.join(" and ")+". " : "No contact. "}${row.ignition ? "Ignite "+row.ignition+"." : "No ignition."}`);
+}
+function show(index) {
+  const row = rows[index];
+  el("progress").textContent = `Round ${index} of ${rows.length-1} · maximum width 1`;
+  el("roundTitle").textContent = row.phase;
+  el("edge").textContent = row.edge ? `Active contact  ${row.edge.join(" — ")}` : "No active contact";
+  el("spread").textContent = index > 15 ? "After the decision deadline" : row.new.length ? `Spread reaches ${row.new.join(", ")}` : "No new vertex from spread";
+  el("ignition").textContent = row.ignition ? `Then ignite ${row.ignition}` : "No ignition";
+  el("total").textContent = `${row.burned.length} of 21 vertices burning`;
+  el("prev").disabled = index === 0; el("next").disabled = index === rows.length-1;
+  draw(row);
+}
+function stop() { if (timer !== null) clearInterval(timer); timer = null; el("play").textContent = "Play"; }
+function jump(index) { slider.value = index; show(index); }
+slider.addEventListener("input", () => { stop(); show(+slider.value); });
+el("prev").addEventListener("click", () => { stop(); jump(+slider.value-1); });
+el("next").addEventListener("click", () => { stop(); jump(+slider.value+1); });
+el("play").addEventListener("click", () => {
+  if (timer !== null) { stop(); return; }
+  if (+slider.value === rows.length-1) jump(0);
+  el("play").textContent = "Pause";
+  timer = setInterval(() => {
+    if (+slider.value === rows.length-1) stop();
+    else jump(+slider.value+1);
+  }, 900);
+});
+new ResizeObserver(() => show(+slider.value)).observe(el("graph"));
+show(0);
+</script>
+</body>
+</html>

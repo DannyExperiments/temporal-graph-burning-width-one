@@ -1,0 +1,15 @@
+.DS_Store
+__pycache__/
+*.pyc
+*.pyo
+/paper/manuscript.aux
+/paper/manuscript.bbl
+/paper/manuscript.bcf
+/paper/manuscript.blg
+/paper/manuscript.fdb_latexmk
+/paper/manuscript.fls
+/paper/manuscript.log
+/paper/manuscript.out
+/paper/manuscript.run.xml
+/paper/manuscript.synctex.gz
+/paper/manuscript.toc

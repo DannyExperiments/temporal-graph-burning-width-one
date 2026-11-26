@@ -1,0 +1,65 @@
+\documentclass[11pt,a4paper]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage[left=.84in,right=.84in,top=.78in,bottom=.78in]{geometry}
+\usepackage{amssymb}
+\usepackage[hidelinks]{hyperref}
+\urlstyle{same}
+\linespread{.95}
+\DeclareMathSizes{8}{8}{8}{8}
+\DeclareMathSizes{9}{9}{8}{8}
+\DeclareMathSizes{10.95}{10.95}{8}{8}
+\newtheorem{theorem}{Theorem}
+\title[Temporal graph burning at width one]{Temporal graph burning at edge-interval-membership width one}
+\hypersetup{pdftitle={Temporal graph burning at edge-interval-membership width one}}
+\date{}
+\begin{document}
+\begin{abstract}
+We prove that Temporal Graph Burning in the sense of Hand is NP-complete even when the underlying graph is connected, each edge appears once, and distinct edges appear at distinct times. Thus the problem is para-NP-complete by edge-interval-membership width, answering the question posed in Hand's dissertation. The reduction from Set Cover assigns one contact to each occupied timestep.
+\end{abstract}
+\maketitle
+
+\section{Model and statement}
+Let \((G,\lambda)\) consist of a finite simple graph and a finite nonempty set \(\lambda(e)\) of active times for each edge. Initially no vertex burns. At each positive integer timestep, fire first spreads across active edges from endpoints burning before that timestep. A burning strategy of length \(\ell\) then places one fire per timestep \(1,\ldots,\ell\), each at a vertex still unburnt after that timestep's spread. It succeeds if all vertices burn by timestep \(\ell+1\), which permits one final spread with no placement. Temporal Graph Burning asks whether there is a successful strategy of length \(\ell\leq h\) \cite[Definition 17]{hand}.
+
+The edge-interval-membership width, introduced by Bumpus and Meeks \cite{bumpus} and used in \cite[Definition 18]{hand}, is
+\[
+\psi=\max_t\bigl|\{e\in E(G):\min\lambda(e)\leq t\leq\max\lambda(e)\}\bigr|.
+\]
+The intervals can contain times when their edges are inactive. Hand asked for the parameterized complexity in \(\psi\) \cite[\S6.1, p.~94]{hand}. Earlier constant-temporal-modular-width hardness uses single appearances but permits many edges at one time \cite[Theorem 5]{dense}.
+
+\begin{theorem}
+Temporal Graph Burning is NP-complete on instances with a connected underlying graph containing an edge and a single, distinct active time for each edge. These instances have \(\psi=1\). Consequently Temporal Graph Burning is para-NP-complete with parameter \(\psi\), and an XP algorithm for that parameter would imply \(\mathrm{P}=\mathrm{NP}\).
+\end{theorem}
+
+\section{Reduction from Set Cover}
+Let \(U\) be a nonempty universe with indexed sets \(S_1,\ldots,S_m\) whose union is \(U\). The budget satisfies \(1\leq k\leq m\). These restrictions preserve NP-hardness of Set Cover \cite{karp}. Instances outside the restrictions can be decided by checking whether the universe is empty, whether the sets cover it, whether the budget is zero, and whether all sets fit the budget. Map these decided cases to fixed restricted yes or no instances. Put \(I=\sum_i |S_i|\).
+
+Use a set vertex \(s_i\) for each \(S_i\), an element vertex \(x_e\) for each \(e\in U\), and a relay \(r_{i,e}\) for each incidence \(e\in S_i\). Add a hub \(c\) and a leaf \(p\). Schedule contacts as follows, with one per occupied timestep.
+\begin{enumerate}
+\item The first \(k+1\) timesteps are empty.
+\item In phase A, over the next \(I\) timesteps, schedule the edges \(s_i r_{i,e}\).
+\item In phase B, over the next \(I\) timesteps, schedule the edges \(r_{i,e}x_e\).
+\item In phase C, schedule \(cp\) first, then the edges from \(c\) to every set vertex and relay, using \(1+m+I\) timesteps.
+\end{enumerate}
+Write \(h=(k+1)+3I+1+m\) for the last phase-C timestep. Leave \(h+1\) empty. Add \(q=h-k-1\) late leaves, with one hub contact each at times \(h+2,\ldots,h+1+q\). The graph is connected because the hub reaches all set vertices and relays in the underlying graph, and every element has a relay. Every edge is distinct and has a distinct singleton interval. The construction has polynomial size.
+
+\subsection*{From a cover to a strategy}
+Pad the cover to \(k\) distinct set indices. Ignite \(c\) and then the \(k\) chosen set vertices during the initial empty timesteps. In every remaining timestep through \(h\), ignite a different late leaf. These ignitions are legal because the late leaves have no contacts through \(h+1\). Phase A lights the relays of the chosen sets. Phase B lights every element since the sets cover \(U\). Phase C lets the hub light \(p\) and all remaining set vertices and relays. Every vertex is burning by \(h\).
+
+\subsection*{From a strategy to a cover}
+For any successful strategy of length \(\ell\leq h\), every late leaf needs its own ignition. At least one further ignition is at \(c\) or \(p\): the only edge at \(p\) is \(cp\), and it occurs before any other contact at \(c\). Before the end of phase B, neither \(c\) nor \(p\) has had a contact. These ignitions therefore cannot account for burning an element vertex. At most \(\ell-q-1\leq k\) ignitions can account for the elements.
+
+Trace each element's first burning backwards. Whenever it was set alight by a contact, the other endpoint was burning at a strictly earlier timestep. This yields a time-respecting path from a single ignition to the element. Each ignition can reach element vertices of one input set. For a set or relay ignition of index \(i\), phase A confines its influence to the star of \(S_i\). Phase B consists of disjoint stars centered at the elements. Each relay reached in phase A can enter only its own element's star. No path can continue to a second element from there, as phase A is over. An ignition during phase B can enter at most one such star if placed at a relay, and cannot reach an element if placed at a set vertex. An element ignition can reach only its own element among elements, so assign it to any input set containing that element. Phase C cannot contribute new element contacts. Selecting one input set for each ignition that accounts for elements therefore covers \(U\) with at most \(k\) sets.
+
+\subsection*{Membership and parameter consequence}
+Every legal ignition is on a previously unburnt vertex, so \(\ell\leq |V(G)|\). Guess the ignition list and check the spread and legal placements through timestep \(\ell+1\). Binary time labels cause no difficulty because the listed contacts can be filtered by time. This shows membership in NP and completes the reduction. Membership also gives para-NP membership, and NP-hardness of the fixed slice \(\psi=1\) gives para-NP-hardness. An XP algorithm would be polynomial on that slice.
+
+\section*{Verification and disclosures}
+The proof uses no computation. The accompanying replay compares small scheduled instances with Set Cover by enumerating legal strategies and tests the final-spread rule separately. The illustrated schedule uses \(U=\{a,b\}\), sets \(\{a,b\}\) and \(\{b\}\), and \(k=1\). It burns all vertices by timestep 14. The first late hub contact is at 16.
+
+The work used AI assistance under human direction. ChatGPT Astra 6.2 (OpenAI) produced the recovered discovery proof and replay. Claude Opus 5.5 (Anthropic) assisted with earlier audits. OpenAI Codex reviewed the construction. GPT-6.2 Sol (OpenAI) checked the literature and prepared the reconstructed manuscript, replay and illustration. The manuscript has undergone internal review.
+
+\renewcommand{\bibliofont}{\normalsize}
+\bibliographystyle{amsplain}
+\bibliography{references}
+\end{document}

@@ -1,13 +1,26 @@
 cff-version: 1.2.0
-message: Please cite this research archive when using its manuscript or replay.
-title: Temporal graph burning at edge-interval-membership width one
+message: "Cite this version of the research release."
+title: "Temporal graph burning at edge-interval-membership width one"
 authors:
-  - name: DannyExperiments
+  - name: "DannyExperiments"
 type: software
-repository-code: https://github.com/DannyExperiments/temporal-graph-burning-width-one
-abstract: A Set Cover reduction proves Temporal Graph Burning NP-complete at edge-interval-membership width one.
+version: "1.0.0"
+date-released: 2026-11-27
+repository-code: "https://github.com/DannyExperiments/temporal-graph-burning-width-one"
 keywords:
-  - temporal graphs
-  - graph burning
-  - parameterized complexity
-  - Set Cover
+  - "temporal graphs"
+  - "graph burning"
+  - "parameterized complexity"
+  - "Set Cover"
+doi: "10.5281/zenodo.24568155"
+url: "https://doi.org/10.5281/zenodo.24568155"
+preferred-citation:
+  type: software
+  title: "Temporal graph burning at edge-interval-membership width one"
+  authors:
+    - name: "DannyExperiments"
+  version: "1.0.0"
+  date-released: 2026-11-27
+  doi: "10.5281/zenodo.24568155"
+  url: "https://doi.org/10.5281/zenodo.24568155"
+  repository-code: "https://github.com/DannyExperiments/temporal-graph-burning-width-one"

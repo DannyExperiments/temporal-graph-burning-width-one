@@ -1,4 +1,4 @@
-# Candidate manifest
+# Release manifest
 
 The checksum ledger covers the files below.
 
@@ -7,6 +7,7 @@ The checksum ledger covers the files below.
 - `.github/workflows/replay.yml`
 - `.github/workflows/verify.yml`
 - `.gitignore`
+- `.zenodo.json`
 - `AI_DISCLOSURE.md`
 - `CITATION.cff`
 - `CLAIMS_EVIDENCE_MATRIX.md`

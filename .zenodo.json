@@ -1,0 +1,28 @@
+{
+  "title": "Temporal graph burning at edge-interval-membership width one",
+  "upload_type": "software",
+  "publication_date": "2026-11-27",
+  "version": "1.0.0",
+  "creators": [
+    {
+      "name": "DannyExperiments"
+    }
+  ],
+  "keywords": [
+    "temporal graphs",
+    "graph burning",
+    "parameterized complexity",
+    "Set Cover"
+  ],
+  "description": "<p>Temporal Graph Burning under Hand’s thesis rules is NP-complete even on a connected underlying graph with one active time per edge and no active time shared by two edges. This yields para-NP-completeness with respect to edge-interval-membership width.</p><p>The reduction from Set Cover assigns one contact to each occupied timestep. A verified finite replay compares 246 schedules, and a worked visual explorer follows a 21-vertex example. The theorem is proved analytically. Internally reviewed. External peer review is pending.</p><p>ChatGPT Astra 6.2 (OpenAI) generated the recovered discovery proof and original replay under human direction. Claude Opus 5.5 (Anthropic) assisted with earlier audits. OpenAI Codex checked the construction. GPT-6.2 Sol (OpenAI) checked the literature and prepared the reconstructed manuscript, exact replay, and illustration. DannyExperiments is the project citation identity.</p>",
+  "access_right": "open",
+  "license": "other-closed",
+  "notes": "All rights reserved. Publicly downloadable files are supplied without a repository-wide reuse license.",
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/DannyExperiments/temporal-graph-burning-width-one/releases/tag/v1.0.0",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    }
+  ]
+}
